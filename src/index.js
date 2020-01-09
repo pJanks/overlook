@@ -1,13 +1,37 @@
-// This is the JavaScript entry file - your code begins here
-// Do not delete or rename this file ********
-
-// An example of how you import jQuery into a JS file if you use jQuery in that file
 import $ from 'jquery';
-
-// An example of how you tell webpack to use a CSS (SCSS) file
 import './css/base.scss';
-
-// An example of how you tell webpack to use an image (also need to link to it in the index.html)
+import domUpdates from './domUpdates'
 import './images/turing-logo.png'
 
-console.log('This is the JavaScript entry file - your code begins here.');
+// fetch dataset
+const getUserData = () => {
+  return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/users/users')
+    .then(response => response.json())
+    .catch(() => {
+      window.alert('There was an error.')
+    })
+}
+
+const getRoomData = () => {
+  return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/rooms/rooms')
+    .then(response => response.json())
+    .catch(() => {
+      window.alert('There was an error.')
+    })
+}
+
+const getBookingData = () => {
+  return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings')
+    .then(response => response.json())
+    .catch(() => {
+      window.alert('There was an error.')
+    })
+}
+
+const getData = () => {
+  Promise.all([getUserData(), getRoomData(), getBookingData()])
+    .then(values => console.log(values))
+    .catch((error) => window.alert(`There was an error: ${error}`))
+}
+
+  getData()
