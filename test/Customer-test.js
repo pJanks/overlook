@@ -4,7 +4,7 @@ const expect = chai.expect;
 
 
 
-describe('Customer', function() {
+describe('Customer', () => {
   let customer, rooms, bookings, date, currentDate, bookingDate, finalDate, newRooms, newBookings;
 
 
@@ -96,10 +96,22 @@ describe('Customer', function() {
       }
     ]
   })
-  describe('default propertiex', () => {
-    // it('should know the current date', () => {
-    //   expect(customer.date).to.equal(Date.now());
-    // });
+  describe('default properties', () => {
+    it('should know the current date', () => {
+      let year = customer.date.getFullYear();
+      let month, day;
+      if ((customer.date.getMonth() + 1) < 10) {
+        month = `0${customer.date.getMonth() + 1}`
+      }
+      if (customer.date.getDate() < 10) {
+        day = `0${customer.date.getDate()}`
+      } else {
+        month = (customer.date.getMonth() + 1);
+        day = customer.date.getDate();
+      }
+      let customerDateAsString = year + "/" + month + "/" + day;
+      expect(customer.getCurrentDate()).to.equal(customerDateAsString);
+    });
 
     it('should be an object', () => {
       expect(customer).to.be.a('object');
@@ -123,7 +135,7 @@ describe('Customer', function() {
   });
 
   describe('customerBookings', () => {
-    it('sould be able to see all bookings made', () => {
+    it('should be able to see all bookings made', () => {
       customer.viewBookings(bookings);
       expect(customer.customerBookings.length).to.equal(3);
     })
