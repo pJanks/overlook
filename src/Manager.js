@@ -1,20 +1,47 @@
 import Customer from './Customer'
+
+let userId, userName, foundUser;
+
+
 class Manager extends Customer {
   constructor(user) {
     super(user, true)
     this.roomsAvailableToday = []
-
+    this.bookedRoomsToday = [];
+    this.customerBookings = []
   }
 
   checkRoomsAvailableToday(rooms, bookings) {
     bookings.forEach(booking => {
       rooms.forEach(room => {
-        if (booking.date !== this.date && booking.roomNumber === room.number && !this.roomsAvailableToday.includes(room)) {
+        if (booking.date === this.date && booking.roomNumber === room.number) {
+          this.bookedRoomsToday.push(room)
+        }
+      })
+    })
+    bookings.forEach(booking => {
+      rooms.forEach(room => {
+        if (booking.date !== this.date && booking.roomNumber === room.number && !this.roomsAvailableToday.includes(room) && !this.bookedRoomsToday.includes(room)) {
           this.roomsAvailableToday.push(room)
         }
       })
     })
+  }
 
+  findBookingsByUser(rooms, bookings, users, user) {
+    foundUser = users.find(person => {
+      return person.name.toLowerCase() === user.toLowerCase()
+    })
+      if (foundUser) {
+        userId = foundUser.id;
+        userName = foundUser.name;
+        bookings.forEach(booking => {
+          if (userId === booking.userID && !this.customerBookings.includes(booking)) {
+            this.customerBookings.push(booking);
+          }
+        })
+      }
+      return foundUser
   }
 
   seeTodaysRevenue(rooms, bookings) {
