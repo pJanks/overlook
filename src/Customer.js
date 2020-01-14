@@ -1,17 +1,19 @@
 // import Booking from './Booking'
 
 class Customer {
-  constructor(user) {
+  constructor(user, isManager = false) {
     this.id = user.id;
     this.name = user.name;
     this.customerBookings = [];
     this.date = user.currentDate;
     this.unavailableRoomsByDate = []
+    this.isManager = isManager;
+
   }
 
   getCurrentDate() {
     let firstDate = new Date();
-    let finalDate = new Date(firstDate)
+    let finalDate = new Date(firstDate);
     let year = finalDate.getFullYear();
     let month, day;
     if ((finalDate.getMonth() + 1) < 10) {
@@ -34,13 +36,10 @@ class Customer {
     })
   }
 
-  calculateMoneySpent(bookings, rooms) {
-    let bookingDate;
-    this.totalMoneySpent = rooms.reduce((acc, room) => {
-      bookings.forEach(booking => {
-        bookingDate = new Date(booking.date);
-        if (room.number === booking.roomNumber && (Math.abs(this.date) -
-            Math.abs(bookingDate)) >= 0 && this.id === booking.userID) {
+  calculateMoneySpent(rooms) {
+    this.totalMoneySpent = this.customerBookings.reduce((acc, booking) => {
+      rooms.forEach(room => {
+        if (booking.roomNumber === room.number) {
           acc += room.costPerNight
         }
       })
@@ -63,14 +62,14 @@ class Customer {
     let index;
     let selectedDate = new Date(bookingDateAsString);
     let today = new Date(todayAsString)
-    if (Math.abs(today) >= Math.abs(selectedDate)) {
+    if (Math.abs(today) > Math.abs(selectedDate)) {
       return 'That day has already passed'
     } else {
       this.availableRoomsByDate = bookings.reduce((acc, booking) => {
         rooms.forEach(room => {
           if (room.number === booking.roomNumber && booking.date === bookingDateAsString && !this.unavailableRoomsByDate.includes(room)) {
             this.unavailableRoomsByDate.push(room)
-          } else if (booking.date !== bookingDateAsString && booking.roomNumber === room.number && !acc.includes(room)) {
+          } else if (booking.date !== bookingDateAsString && booking.roomNumber === room.number && !acc.includes(room) && !this.unavailableRoomsByDate.includes(room)) {
             acc.push(room)
           }
         })
@@ -78,10 +77,8 @@ class Customer {
       }, []);
       this.availableRoomsByDate = this.availableRoomsByDate.reduce((acc, availableRoom) => {
         bookings.forEach(booking => {
-          if (booking.roomNumber === availableRoom.number && ((Math.abs(today) - Math.abs(new Date(booking.date))) < 1)) {
+          if (booking.roomNumber === availableRoom.number && booking.date !== bookingDateAsString && ((Math.abs(today) - Math.abs(new Date(booking.date))) < 1) && !acc.includes(availableRoom) && !this.unavailableRoomsByDate.includes(availableRoom)) {
             acc.push(availableRoom)
-          } else if (booking.roomNumber === availableRoom.number && ((Math.abs(today) - Math.abs(new Date(booking.date))) > 1)) {
-            this.unavailableRoomsByDate.push(availableRoom)
           }
         })
         return acc
@@ -98,6 +95,27 @@ class Customer {
         this.customerBookings.push(room)
         return 'Your room was booked!'
       }
+    })
+  }
+
+  postRoom(i, dateAsString) {
+    console.log(this.availableRoomsByDate[i]);
+    number: 1
+roomType: "residential suite"
+bidet: true
+bedSize: "queen"
+numBeds: 1
+costPerNight: 358.4
+    return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userID: parseInt(this.id),
+        date: dateAsString,
+        roomNumber: parseInt(this.availableRoomsByDate[i].number)
+      })
     })
   }
 }
