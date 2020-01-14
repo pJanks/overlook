@@ -168,15 +168,15 @@ describe('Customer', () => {
     })
 
     it('should apologize fiercely if there are no available rooms', () => {
-      newRooms = [{
+      newBookings = [{
         id: "5fwrgu4i7k55hl6t6",
         userID: 1,
-        date: "2020/01/12",
+        date: "2020/01/19",
         roomNumber: 3,
         roomServiceCharges: []
       }]
 
-      newBookings = [{
+      newRooms = [{
         number: 3,
         roomType: "single room",
         bidet: false,
@@ -185,7 +185,7 @@ describe('Customer', () => {
         costPerNight: 491.14
       }]
       expect(customer.checkAvailableDates(newBookings, newRooms, '2020/01/19',
-        customer.getCurrentDate())).to.equal('There are no rooms available for that day! I fierecly apologize!')
+        '2020/01/18')).to.equal('There are no rooms available for that day! I fierecly apologize!')
     })
   })
 
