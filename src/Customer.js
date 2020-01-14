@@ -99,6 +99,7 @@ class Customer {
     })
   }
 
+
   postRoom(i, dateAsString, foundUser) {
     $(`#${i}`).html('')
     if (this.id !== 51) {
