@@ -76,7 +76,7 @@ describe('Customer', () => {
       {
         id: "5fwrgu4i7k55hl6t6",
         userID: 1,
-        date: "2020/01/12",
+        date: "2020/01/20",
         roomNumber: 3,
         roomServiceCharges: []
       },
@@ -143,8 +143,9 @@ describe('Customer', () => {
 
   describe('calculateMoneySpent', () => {
     it('should be able to see total cost spent on rooms', () => {
-      customer.calculateMoneySpent(bookings, rooms);
-      expect(customer.totalMoneySpent).to.equal(358.4)
+      customer.viewBookings(bookings)
+      customer.calculateMoneySpent(rooms);
+      expect(customer.totalMoneySpent).to.equal(358.4 + 491.14 + 429.44)
     })
   })
 
@@ -155,15 +156,15 @@ describe('Customer', () => {
     })
 
     it('should keep track of rooms that aren\'t available on a date', () => {
-      customer.checkAvailableDates(bookings, rooms, '2020/01/12',
+      customer.checkAvailableDates(bookings, rooms, '2020/01/20',
         customer.getCurrentDate())
-      expect(customer.unavailableRoomsByDate.length).to.equal(2)
+      expect(customer.unavailableRoomsByDate.length).to.equal(1)
     })
 
     it('should keep track of rooms that are available on a date', () => {
-      customer.checkAvailableDates(bookings, rooms, '2020/01/12',
+      customer.checkAvailableDates(bookings, rooms, '2020/01/19',
         customer.getCurrentDate())
-      expect(customer.availableRoomsByDate.length).to.equal(3)
+      expect(customer.availableRoomsByDate.length).to.equal(4)
     })
 
     it('should apologize fiercely if there are no available rooms', () => {
@@ -183,7 +184,7 @@ describe('Customer', () => {
         numBeds: 1,
         costPerNight: 491.14
       }]
-      expect(customer.checkAvailableDates(newBookings, newRooms, '2020/01/12',
+      expect(customer.checkAvailableDates(newBookings, newRooms, '2020/01/19',
         customer.getCurrentDate())).to.equal('There are no rooms available for that day! I fierecly apologize!')
     })
   })
@@ -223,9 +224,9 @@ describe('Customer', () => {
     })
 
     it('should not allow a user to select an unavailable room', () => {
-      customer.checkAvailableDates(bookings, rooms, '2020/01/12',
+      customer.checkAvailableDates(bookings, rooms, '2020/01/20',
         customer.getCurrentDate())
-      customer.bookRoom(3, "2020/01/12")
+      customer.bookRoom(3, "2020/01/20")
       expect(customer.customerBookings.length).to.equal(0)
     })
   })
