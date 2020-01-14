@@ -90,16 +90,16 @@ const domUpdates = {
         $('.bookings').append(`
           <div class='each-booked-room'>Room: ${room.number}, Cost: $${room.costPerNight.toFixed(2)}</div>
           `)
-        $('.search-user').on('click', domUpdates.displayUser)
       })
     }
+    $('.search-user').on('click', domUpdates.displayUser)
   },
 
   displayUser: () => {
+    let i = -1
     if ($('.search-by-user').val()) {
       let enteredName = $('.search-by-user').val()
       foundUser = user.findBookingsByUser(hotelObj.roomData.rooms, hotelObj.bookingData.bookings, hotelObj.users.users, enteredName)
-      console.log(foundUser);
       if (user.customerBookings.length) {
         let userCost = hotelObj.roomData.rooms.reduce((acc, room) => {
           user.customerBookings.forEach(booking => {
@@ -111,11 +111,18 @@ const domUpdates = {
         }, 0)
         $('.bookings').html('');
         $('.bookings').html(`${enteredName} has spent $${userCost} on these bookings: `);
-
         user.customerBookings.forEach(booking => {
-          $('.bookings').append(`
-          <div class='each-booked-room'>Date: ${booking.date}, Room: ${booking.roomNumber}</div>
-          `)
+          i++
+          console.log('hi');
+          if (Math.abs(new Date(booking.date)) < Math.abs(new Date(user.date))) {
+            $('.bookings').append(`
+            <div class='each-booked-room' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' disabled='true' id='${i}'>Delete Booking</booking></div>
+            `)
+          } else {
+            $('.bookings').append(`
+            <div class='each-booked-room' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' id='${i}'>Delete Booking</booking></div>
+            `)
+          }
           $('.form-holder').html(`
               <label class='search-bar'>Search for rooms available by date:</label>
               <input class='search-by-date' type="text" placeholder='yyyy/mm/dd'>
@@ -123,7 +130,14 @@ const domUpdates = {
             })
       }
       $('.search-date').on('click', domUpdates.getAvailableRoomsByDate)
+      $('.delete-booking').on('click', domUpdates.deleteBooking)
     }
+  },
+
+  deleteBooking: () => {
+    user.deleteCustomerBookingWithNumber($(event.target).attr('id'));
+    user.deleteCustomerBookingWithString($(event.target).attr('id'));
+
   },
 
   getAvailableRoomsByDate: () => {
