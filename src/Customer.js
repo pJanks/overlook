@@ -1,5 +1,5 @@
 // import Booking from './Booking'
-
+import $ from 'jquery'
 class Customer {
   constructor(user, isManager = false) {
     this.id = user.id;
@@ -18,13 +18,15 @@ class Customer {
     let month, day;
     if ((finalDate.getMonth() + 1) < 10) {
       month = `0${finalDate.getMonth() + 1}`
+    } else {
+      month = finalDate.getMonth() + 1
     }
     if (finalDate.getDate() < 10) {
       day = `0${finalDate.getDate()}`
     } else {
-      month = (finalDate.getMonth() + 1);
       day = finalDate.getDate();
     }
+    this.date = year + "/" + month + "/" + day;
     return year + "/" + month + "/" + day;
   }
 
@@ -83,40 +85,47 @@ class Customer {
         })
         return acc
       }, [])
-      if (!this.availableRoomsByDate.length) {
-        return 'There are no rooms available for that day! I fierecly apologize!'
-      }
+    }
+    if (!this.availableRoomsByDate.length) {
+      return 'There are no rooms available for that day! I fierecly apologize!'
     }
   }
 
-  bookRoom(roomNumber, date) {
+  bookRoom(roomNumber) {
     this.availableRoomsByDate.forEach(room => {
       if (room.number === roomNumber) {
-        this.customerBookings.push(room)
-        return 'Your room was booked!'
+        this.customerBookings.push(room);
       }
     })
   }
 
-  postRoom(i, dateAsString) {
-    console.log(this.availableRoomsByDate[i]);
-    number: 1
-roomType: "residential suite"
-bidet: true
-bedSize: "queen"
-numBeds: 1
-costPerNight: 358.4
-    return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        userID: parseInt(this.id),
-        date: dateAsString,
-        roomNumber: parseInt(this.availableRoomsByDate[i].number)
+  postRoom(i, dateAsString, foundUser) {
+    $(`#${i}`).html('')
+    if (this.id !== 51) {
+      return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userID: parseInt(this.id),
+          date: dateAsString,
+          roomNumber: parseInt(this.availableRoomsByDate[i].number)
+        })
       })
-    })
+    } else {
+      return fetch('https://fe-apps.herokuapp.com/api/v1/overlook/1904/bookings/bookings', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userID: parseInt(foundUser.id),
+          date: dateAsString,
+          roomNumber: parseInt(this.availableRoomsByDate[i].number)
+        })
+      })
+    }
   }
 }
 
