@@ -102,11 +102,12 @@ describe('Customer', () => {
       let month, day;
       if ((customer.date.getMonth() + 1) < 10) {
         month = `0${customer.date.getMonth() + 1}`
+      } else {
+        month = customer.date.getMonth() + 1
       }
       if (customer.date.getDate() < 10) {
         day = `0${customer.date.getDate()}`
       } else {
-        month = (customer.date.getMonth() + 1);
         day = customer.date.getDate();
       }
       let customerDateAsString = year + "/" + month + "/" + day;
