@@ -13,7 +13,6 @@ const domUpdates = {
 
   loadPage: (hotel) => {
     hotelObj = hotel;
-    console.log(hotel);
     $('body').html(`<header>
       <h1>Welcome to Motel 16!</h1>
       <h2>Please, log in to proceed.</h2>
