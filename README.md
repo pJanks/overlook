@@ -10,6 +10,6 @@ Linter, JavaScript, jQuery, Webpack, and npm
 
 ## Screenshots
 
-![](/Users/johnnycassidy/turing/moduleTwo/projects/overlook/src/images/1579096798169.png)
+![](./images/1579096798169.png)
 
-![](/Users/johnnycassidy/turing/moduleTwo/projects/overlook/src/images/1579096680650.png)
+![](./images/1579096680650.png)
