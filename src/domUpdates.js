@@ -7,26 +7,30 @@ let hotelObj, user, selectedDateAsString, foundUser;
 const domUpdates = {
   validateInputs: () => {
     if ($('.username').val() && $('.password').val()) {
-      $('.submitLogin').removeAttr("disabled");
+      $('.submit-login').removeAttr("disabled");
     }
   },
 
   loadPage: (hotel) => {
     hotelObj = hotel;
-    console.log(hotelObj);
+    console.log(hotel);
     $('body').html(`<header>
-      <h1>Motel Trece</h1>
-      <h2>Please, log in to proceed</h2>
+      <h1>Welcome to Motel 16!</h1>
+      <h2>Please, log in to proceed.</h2>
     </header>
     <section class='login-info'>
+    <div class='username-info'
       <label for="user-name-input">Username:</label>
-      <input class='username login' type="text" placeholder="Input Username" id='user-name-input'>
+      <input aria-label='Username input' class='username login' type="text" placeholder="Input Username" id='user-name-input'>
+    </div>
+    <div class='password-info'
       <label for="password-input">Password:</label>
-      <input class='password login' type="text" placeholder="Input Password" id='password-input'>
-      <button class='submitLogin' type="submit" aria-label='Submit user info' disabled='true'>Log In</button>
+      <input aria-label='Password input' class='password login' type="password" placeholder="Input Password" id='password-input'>
+    </div>
+      <button class='submit-login' type="submit" aria-label='Submit user info' disabled='true'>Log In</button>
     </section>`)
     $('.login').keydown(domUpdates.validateInputs)
-    $('.submitLogin').click(domUpdates.changePage)
+    $('.submit-login').click(domUpdates.changePage)
   },
 
   changePage: () => {
@@ -34,16 +38,18 @@ const domUpdates = {
     let userNumber = parseInt($('.username').val().split('r')[1])
     if (userType === 'custome' && $('.password').val() === 'overlook2019') {
       $('body').html(`
-      <header class='user-greeting'>
-        Hello <span class='user-name'></span>! You have spent <span class='user-spending'></span> with us so far.
+      <header>
+        <h2>Hello <span class='user-name'></span>! You have spent <span class='user-spending'></span> with us so far.</h2>
       </header>
-      <section class='bookings'>
-      <h3>Your Bookings:</h3>
-      </section>
-      <section class='form-holder'>
-        <label class='search-bar'>Search for rooms available by date:</label>
-        <input class='search-by-date' type="text" placeholder='yyyy/mm/dd'>
-        <button class='search-date'>Search</button>
+      <section class='user-content'>
+        <section class='bookings'>
+          <h3>Your Bookings:</h3>
+        </section>
+        <section class='form-holder'>
+          <label class='search-bar'>Search for rooms available by date:</label>
+          <input class='search-by-date' type="text" placeholder='yyyy/mm/dd'>
+          <button class='search-date'>Search</button>
+        </section>
       </section>`)
       let currentUser = hotelObj.users.users.find(user => {
         return user.id === userNumber
@@ -71,24 +77,27 @@ const domUpdates = {
         name: 'Johnny Cassidy'
       }, true)
       user.getCurrentDate()
-      user.checkRoomsAvailableToday(hotelObj.roomData.rooms, hotelObj.bookingData.bookings)
+      user.checkRoomsAvailableToday(hotelObj.roomData.rooms,
+        hotelObj.bookingData.bookings)
       $('body').html(`<header class='user-greeting'>
-        Hello! Our occupancy today is <span class='occupancy'>${((user.bookedRoomsToday.length / 25) * 100).toFixed(2)}%</span> and total revenue is <span class'revenue'>$${user.seeTodaysRevenue(hotelObj.roomData.rooms, hotelObj.bookingData.bookings)}</span>.
+        <h1>Hello! Our occupancy today is <span class='occupancy'>${((user.bookedRoomsToday.length / 25) * 100).toFixed(2)}%</span> and total revenue is <span class'revenue'>$${user.seeTodaysRevenue(hotelObj.roomData.rooms, hotelObj.bookingData.bookings).toFixed(2)}</span>.</h1>
       </header>
-      <section class='bookings'>
-      <h3>Bookings Today, ${user.date}:</h3>
-      </section>
-      <section class='form-holder'>
-        <label class='search-user-bar'>Search for users by name:</label>
-        <input class='search-by-user' type="text" placeholder='Enter a user's name'>
-        <button class='search-user'>Search</button>
+      <section class='user-content'>
+        <section class='bookings'>
+          <h3>Bookings Today, ${user.date}:</h3>
+        </section>
+        <section class='form-holder'>
+          <label class='search-user-bar'>Search for users by name:</label>
+          <input class='search-by-user' type="text" placeholder='Enter a user's name'>
+          <button class='search-user'>Search</button>
+        </section>
       </section>`)
       user.roomsAvailableToday.sort((a, b) => {
         return a.number - b.number
       })
       user.roomsAvailableToday.forEach(room => {
         $('.bookings').append(`
-          <div class='each-booked-room'>Room: ${room.number}, Cost: $${room.costPerNight.toFixed(2)}</div>
+          <div class='booking'>Room: ${room.number}, Cost: $${room.costPerNight.toFixed(2)}</div>
           `)
       })
     }
@@ -99,7 +108,8 @@ const domUpdates = {
     let i = -1
     if ($('.search-by-user').val()) {
       let enteredName = $('.search-by-user').val()
-      foundUser = user.findBookingsByUser(hotelObj.roomData.rooms, hotelObj.bookingData.bookings, hotelObj.users.users, enteredName)
+      foundUser = user.findBookingsByUser(hotelObj.roomData.rooms,
+        hotelObj.bookingData.bookings, hotelObj.users.users, enteredName)
       if (user.customerBookings.length) {
         let userCost = hotelObj.roomData.rooms.reduce((acc, room) => {
           user.customerBookings.forEach(booking => {
@@ -110,24 +120,23 @@ const domUpdates = {
           return acc
         }, 0)
         $('.bookings').html('');
-        $('.bookings').html(`${enteredName} has spent $${userCost} on these bookings: `);
+        $('.bookings').html(`${enteredName} has spent $${userCost.toFixed(2)} on these bookings: `);
         user.customerBookings.forEach(booking => {
           i++
-          console.log('hi');
           if (Math.abs(new Date(booking.date)) < Math.abs(new Date(user.date))) {
             $('.bookings').append(`
-            <div class='each-booked-room' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' disabled='true' id='${i}'>Delete Booking</booking></div>
+            <div class='each-booked-room booking' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' disabled='true' id='${i}'>Delete Booking</booking></div>
             `)
           } else {
             $('.bookings').append(`
-            <div class='each-booked-room' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' id='${i}'>Delete Booking</booking></div>
+            <div class='each-booked-room booking' data-id='${booking.id}' id='${i}'>Date: ${booking.date}, Room: ${booking.roomNumber} <button class='delete-booking' data-id='${booking.id}' id='${i}'>Delete Booking</booking></div>
             `)
           }
           $('.form-holder').html(`
               <label class='search-bar'>Search for rooms available by date:</label>
               <input class='search-by-date' type="text" placeholder='yyyy/mm/dd'>
               <button class='search-date'>Search</button>`)
-            })
+        })
       }
       $('.search-date').on('click', domUpdates.getAvailableRoomsByDate)
       $('.delete-booking').on('click', domUpdates.deleteBooking)
@@ -143,7 +152,8 @@ const domUpdates = {
   getAvailableRoomsByDate: () => {
     let i = -1;
     selectedDateAsString = $('.search-by-date').val()
-    user.checkAvailableDates(hotelObj.bookingData.bookings, hotelObj.roomData.rooms, selectedDateAsString, user.date)
+    user.checkAvailableDates(hotelObj.bookingData.bookings,
+      hotelObj.roomData.rooms, selectedDateAsString, user.date)
     if ($('.search-by-date').val() && user.availableRoomsByDate) {
       $('.form-holder').html(`
         <label class='filter-bar'>Filter by type of room:</label>
@@ -159,7 +169,7 @@ const domUpdates = {
       })
       $('.filter-input').on('keydown', domUpdates.filterRoomsByType)
     } else {
-      // window.alert('There are no rooms available for that day! I fierecly apologize!');
+      window.alert('There are no rooms available for that day! I fierecly apologize!');
       return 'There are no rooms available for that day! I fierecly apologize!'
     }
     $('.book-room-button').click(domUpdates.bookARoom)
