@@ -1,6 +1,6 @@
 import Customer from './Customer'
 import $ from 'jquery'
-let userId, userName, foundUser;
+let userId, foundUser;
 
 
 class Manager extends Customer {
@@ -21,7 +21,9 @@ class Manager extends Customer {
     })
     bookings.forEach(booking => {
       rooms.forEach(room => {
-        if (booking.date !== this.date && booking.roomNumber === room.number && !this.roomsAvailableToday.includes(room) && !this.bookedRoomsToday.includes(room)) {
+        if (booking.date !== this.date && booking.roomNumber === room.number &&
+            !this.roomsAvailableToday.includes(room) &&
+              !this.bookedRoomsToday.includes(room)) {
           this.roomsAvailableToday.push(room)
         }
       })
@@ -34,9 +36,9 @@ class Manager extends Customer {
     })
     if (foundUser) {
       userId = foundUser.id;
-      userName = foundUser.name;
       bookings.forEach(booking => {
-        if (userId === booking.userID && !this.customerBookings.includes(booking)) {
+        if (userId === booking.userID &&
+            !this.customerBookings.includes(booking)) {
           this.customerBookings.push(booking);
         }
       })
@@ -53,7 +55,7 @@ class Manager extends Customer {
       },
       body: JSON.stringify({
         id: parseInt($(event.target).attr('data-id'))
-        })
+      })
     })
   }
 
@@ -66,7 +68,7 @@ class Manager extends Customer {
       },
       body: JSON.stringify({
         id: $(event.target).attr('data-id')
-        })
+      })
     })
   }
 
