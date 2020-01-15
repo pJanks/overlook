@@ -61,7 +61,6 @@ class Customer {
   }
 
   checkAvailableDates(bookings, rooms, bookingDateAsString, todayAsString) {
-    let index;
     let selectedDate = new Date(bookingDateAsString);
     let today = new Date(todayAsString)
     if (Math.abs(today) > Math.abs(selectedDate)) {
@@ -69,17 +68,24 @@ class Customer {
     } else {
       this.availableRoomsByDate = bookings.reduce((acc, booking) => {
         rooms.forEach(room => {
-          if (room.number === booking.roomNumber && booking.date === bookingDateAsString && !this.unavailableRoomsByDate.includes(room)) {
+          if (room.number === booking.roomNumber &&
+              booking.date === bookingDateAsString &&
+                !this.unavailableRoomsByDate.includes(room)) {
             this.unavailableRoomsByDate.push(room)
-          } else if (booking.date !== bookingDateAsString && booking.roomNumber === room.number && !acc.includes(room) && !this.unavailableRoomsByDate.includes(room)) {
+          } else if (booking.date !== bookingDateAsString &&
+              booking.roomNumber === room.number && !acc.includes(room) &&
+                !this.unavailableRoomsByDate.includes(room)) {
             acc.push(room)
           }
         })
         return acc;
-      }, []);
-      this.availableRoomsByDate = this.availableRoomsByDate.reduce((acc, availableRoom) => {
+      }, []).reduce((acc, availableRoom) => {
         bookings.forEach(booking => {
-          if (booking.roomNumber === availableRoom.number && booking.date !== bookingDateAsString && ((Math.abs(today) - Math.abs(new Date(booking.date))) < 1) && !acc.includes(availableRoom) && !this.unavailableRoomsByDate.includes(availableRoom)) {
+          if (booking.roomNumber === availableRoom.number &&
+              booking.date !== bookingDateAsString &&
+                ((Math.abs(today) - Math.abs(new Date(booking.date))) < 1) &&
+                  !acc.includes(availableRoom) &&
+                    !this.unavailableRoomsByDate.includes(availableRoom)) {
             acc.push(availableRoom)
           }
         })
