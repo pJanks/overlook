@@ -1,7 +1,5 @@
-import $ from 'jquery';
 import './css/base.scss';
 import domUpdates from './domUpdates'
-import Customer from './Customer'
 import Hotel from './Hotel'
 import './images/turing-logo.png'
 
@@ -30,7 +28,7 @@ const getData = () => {
     .then(values => {
       let hotel = new Hotel(values[0], values[1], values[2])
       domUpdates.loadPage(hotel);
-      
+
     })
     .catch((error) => window.alert(`There was an error: ${error}.`))
 }
